@@ -22,5 +22,4 @@
 <style scoped>
 .index-card {
   width: 45%;
-  height: 45%;
 }</style>

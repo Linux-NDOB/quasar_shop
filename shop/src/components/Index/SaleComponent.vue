@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-card class="absolute-center flex flex-center q-pa-md" style="width: 40%;">
+    <q-card class="absolute-center flex flex-center q-pa-md q-mt-lg q-mb-l" style="width: 40%;">
       <q-toolbar class="bg-white bottom-border">
         <q-toolbar-title class="">
           <q-img class="login-title nav-logo absolute-center"
@@ -8,7 +8,7 @@
         </q-toolbar-title>
       </q-toolbar>
       <q-form @submit.prevent="onSubmit">
-        <div class="q-gutter-y-sm q-py-sm column" style="max-width: 500px">
+        <div class="q-gutter-y-sm q-py-sm column" style="max-width: 600px">
           <div class="login-title text-center text-h5 q-pa-sm">Subir producto</div>
           <q-input class="login-title" filled v-model="email" type="text" hint="Nombre producto">
             <template v-slot:before>
