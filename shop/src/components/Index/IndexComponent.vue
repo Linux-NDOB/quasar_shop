@@ -52,5 +52,5 @@
   margin-left: 15%;
   margin-top: 10%;
   width: 40%;
-  height: 50%;
+  height: 60%;
 }</style>
