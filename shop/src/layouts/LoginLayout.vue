@@ -3,13 +3,13 @@
     <q-header reveal>
       <q-toolbar class="bg-white bottom-border">
         <q-toolbar-title class="">
-          <q-img class="nav-logo self-center" src="../assets/artesanias-low-resolution-logo-black-transparent.png"
+          <q-img class="self-center" src="../assets/artesanias-low-resolution-logo-black-transparent.png"
             style="width: 10%;"></q-img>
         </q-toolbar-title>
         <q-btn to="/" class="q-ma-sm navbar-letter text-black" flat>Principal</q-btn>
-        <q-btn to="/login" class="q-ma-sm navbar-letter text-black" flat>Entrar</q-btn>
-        <q-btn to="/register" class="q-ma-sm navbar-letter text-black" flat>Registrarse</q-btn>
-
+        <q-btn to="/login" class="q-ma-sm navbar-letter text-black" flat>Usuario</q-btn>
+        <q-btn to="/provider" class="q-ma-sm navbar-letter text-black" flat>Proveedor</q-btn>
+        <q-btn to="/admin" class="q-ma-sm navbar-letter text-black" flat>Administrador</q-btn>
       </q-toolbar>
     </q-header>
 

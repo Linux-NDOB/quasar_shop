@@ -1,94 +1,113 @@
 <template>
   <div class="q-pa-md">
-    <div class="image1"></div>
+    <div class="image1">
+      <div class="overlay"></div>
+    </div>
     <div class="image2"></div>
     <div class="image3"></div>
-    <div class="clear"></div> <!-- Add this clearing element -->
 
-    <q-card class="index-card" flat bordered>
-      <q-img src="https://media.istockphoto.com/id/454321895/es/foto/sombrero-colombiano.jpg?s=1024x1024&w=is&k=20&c=ftIfebyr5A7izNJjeD_eQ4azRFzuF_KqKVq_W4uCzBE=" />
+    <div v-for="i in rows" :key="i.product_id" class="row inline">
+      <q-card class="index-card" flat bordered>
+      <q-img :src="i.image" class="my-image"/>
 
       <q-card-section>
 
         <div class="row no-wrap items-center">
           <div class="col text-h6 ellipsis">
-            Sombrero Vuelteao
+            {{ i.product_name }}
           </div>
           <div class="col-auto text-grey text-caption q-pt-md row no-wrap items-center">
             <q-icon name="attach_money" />
-            250.000
+            {{  i.price }}
           </div>
         </div>
       </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <div class="text-subtitle1">
-          Descripcion
-        </div>
-        <div class="text-caption text-grey">
-          Lorem ipsum dolor
-        </div>
-      </q-card-section>
-
       <q-separator />
-
       <q-card-actions>
-        <q-btn class="" flat round icon="delete" color="red" />
-        <q-btn flat color="black">
-          Eliminar
-        </q-btn>
-        <q-btn flat round icon="shopping_bag" color="green" />
-        <q-btn flat color="black">
-          Comprar
-        </q-btn>
+        <q-list>
+          <q-item clickable>
+          <q-item-section avatar>
+            <q-icon color="green" name="shopping_bag" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label> <a class="router-link" :href="'https://wa.me/' + i.provider_phone + '?text=Hola%20¿Cómo%20estás?%20soy%20' + store.user[0] + ',%20me%20interesa%20comprar%20tu%20' + i.product_name+ '.'" target="_blank">Comprar</a></q-item-label>
+            <q-item-label caption>Contactarse con el vendedor!.</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable>
+          <q-item-section avatar>
+            <q-icon color="red" name="delete" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label @click="delCart(i.product_id)">Eliminar</q-item-label>
+            <q-item-label caption>Sacar del carrito.</q-item-label>
+          </q-item-section>
+        </q-item>
+        </q-list>
       </q-card-actions>
     </q-card>
+    </div>
   </div>
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { mainStore } from 'src/stores/example-store'
 
-.image1 {
-  width: 60%;
-  height: 80vh;
-  background-image: url('https://images.pexels.com/photos/4792079/pexels-photo-4792079.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-  /* Replace with your image URL */
-  background-size: cover;
-  float: left;
+const store = mainStore()
+
+const columns = [
+  { name: 'Nombre', align: 'center', label: 'Nombre', field: 'product_name', sortable: true },
+  { name: 'Precio', align: 'center', label: 'Precio', field: 'price', sortable: true },
+  { name: 'Categoria', align: 'center', label: 'Precio', field: 'category', sortable: true }
+]
+
+const rows = ref([])
+const filter = ref('')
+const selected = ref([])
+
+const fillRows = async () => {
+  const data = await store.get('cuserid/' + store.user[1])
+  let index = 0
+  data.forEach((row: any) => {
+    const newRow = {
+      index,
+      user_id: row.user_id,
+      product_id: row.product_id,
+      product_name: row.product_name,
+      category: row.category,
+      price: row.price,
+      stack: row.stack,
+      provider_name: row.provider_name,
+      provider_phone: row.provider_phone,
+      image: row.image
+    }
+    rows.value.push(newRow)
+    index += 1
+  })
 }
 
-.image2,
-.image3 {
-  width: 40%;
-  height: 40vh;
-  background-size: cover;
-  background-position: center;
-  float: left;
+const delCart = async (id: string) => {
+  const response = await store.del('cart/', id + '/')
+  response >= 200 && response < 300 ? store.notify('Exito!', 'Eliminado del carrito', 'success') : store.notify('Error', 'No agregado o ya existe', 'error')
+  rows.value = []
+  fillRows()
 }
 
-.image2 {
-  background-image: url('https://images.pexels.com/photos/6850579/pexels-photo-6850579.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-  /* Replace with your image URL */
-}
+onMounted(() => fillRows())
+</script>
 
-.image3 {
-  background-image: url('https://images.pexels.com/photos/1820919/pexels-photo-1820919.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-  /* Replace with your image URL */
+<style scoped lang="scss">
+.my-image{
+  max-height: 200px;
 }
-
 .index-card {
-  position: absolute;
-  margin-left: 0.5%;
-  margin-top: 0.5%;
-  min-width: 20%;
-  max-width: 25%;
-}
-
-.index-card2 {
-  position: relative;
-  margin-left: 0.5%;
-  margin-top: 0.5%;
-  min-width: 20%;
-  max-width: 25%;
+  width: 80%; /* Adjust width as needed */
+  max-width: 300px; /* Add a max-width to limit card width */
+  min-height: 350px;
+  max-height: 400px;
+  overflow: hidden;
 }
 </style>

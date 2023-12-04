@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md lato-bold-italic">
-    <q-table title="Artesanias" :rows="rows" :columns="columns" row-key="name" selection="multiple"
+    <q-table title="Productos" :rows="rows" :columns="columns" row-key="name" selection="multiple"
       v-model:selected="selected" :filter="filter" grid hide-header>
       <template v-slot:top-right>
         <q-input debounce="300" v-model="filter" placeholder="Buscar articulo">
@@ -29,18 +29,31 @@
             </q-card-section>
             <q-card-section class="row">
                 <div class="col text-subtitle2">
-                  {{ props.row.stack }} Disponibles
+                  Disponibles: {{ props.row.stack }}
                 </div>
                 <div class="col-auto row no-wrap items-center">
                   Proveido por:
                   {{ props.row.provider_name }}
                 </div>
             </q-card-section>
+            <q-card-section class="row">
+                <div class="col text-subtitle2">
+                  Categoria: {{ props.row.category }}
+                </div>
+                <div class="col-auto row no-wrap items-center">
+                  Telefono Proveedor:
+                  {{ props.row.provider_phone }}
+                </div>
+            </q-card-section>
             <q-separator />
-            <q-card-actions>
-              <q-btn flat round icon="shopping_bag" color="green" />
-              <q-btn flat color="black" @click="addCart(props.row.product_id)">
-                Agregar al carrito
+            <q-card-actions class="justify-center">
+              <q-btn flat round icon="edit" color="blue" />
+              <q-btn flat color="blue" @click="editProduct(props.row.product_id)">
+                Editar
+              </q-btn>
+              <q-btn flat round icon="delete" color="red" />
+              <q-btn flat color="red" @click="delProduct(props.row.product_id)">
+                Eliminar
               </q-btn>
             </q-card-actions>
           </q-card>
@@ -53,8 +66,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { mainStore } from 'src/stores/example-store'
 
+const router = useRouter()
 const store = mainStore()
 
 const columns = [
@@ -68,7 +83,9 @@ const filter = ref('')
 const selected = ref([])
 
 const fillRows = async () => {
-  const data = await store.get('product/')
+  const product = await store.getId('provider/', store.provider)
+  console.log(product)
+  const data = await store.get('pprovider/' + product.provider_phone)
   let index = 0
   data.forEach((row: any) => {
     const newRow = {
@@ -87,13 +104,16 @@ const fillRows = async () => {
   })
 }
 
-const addCart = async (id: string) => {
-  const product = await store.getId('product/', id)
-  const toCart = { ...product, user_id: store.user[1] }
-  const response = await store.post('cart/', toCart)
-  response >= 200 && response < 300 ? store.notify('Exito!', 'Agregado al carrito', 'success') : store.notify('Error', 'No agregado o ya existe', 'error')
+const delProduct = async (id: string) => {
+  const response = await store.del('product/', id + '/')
+  response >= 200 && response < 300 ? store.notify('Exito!', 'Eliminado', 'success') : store.notify('Error', 'No eliminado', 'error')
+  rows.value = []
+  fillRows()
+}
 
-  console.log(toCart)
+const editProduct = async (id: string) => {
+  store.setProduct(id)
+  router.push('provider-edit')
 }
 
 onMounted(() => fillRows())

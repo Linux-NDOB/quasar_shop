@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md lato-bold-italic">
-    <q-table title="Artesanias" :rows="rows" :columns="columns" row-key="name" selection="multiple"
+    <q-table title="Bolsos" :rows="rows" :columns="columns" row-key="name" selection="multiple"
       v-model:selected="selected" :filter="filter" grid hide-header>
       <template v-slot:top-right>
         <q-input debounce="300" v-model="filter" placeholder="Buscar articulo">
@@ -68,7 +68,7 @@ const filter = ref('')
 const selected = ref([])
 
 const fillRows = async () => {
-  const data = await store.get('product/')
+  const data = await store.get('pcategories/bolsos')
   let index = 0
   data.forEach((row: any) => {
     const newRow = {

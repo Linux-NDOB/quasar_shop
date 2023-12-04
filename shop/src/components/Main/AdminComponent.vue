@@ -1,32 +1,18 @@
 <template lang="pug">
 .q-pa-md
   q-card.absolute-center.flex.flex-center.q-pa-sm(style="width: 35%")
-    q-toolbar.bg-white.bottom-border
-      q-toolbar-title
+    q-toolbar.bg-white.bottom-border.q-my-sm
+      q-toolbar-title.q-my-md
         q-img.login-title.nav-logo.absolute-center(src="/src/assets/artesanias-low-resolution-logo-black-transparent.png", style="width: 35%")
     q-separator
     q-card
-      q-tabs.q-mt-md(v-model="tab" dense class="text-grey" active-color="black" indicator-color="black" align="justify" narrow-indicator)
-        q-tab(name="mails" label="Entrar")
-        q-tab(name="alarms" label="Registrarse")
-      q-separator
-      q-tab-panels(v-model="tab" animated)
-        q-tab-panel(name="mails")
-          Form(:validation-schema='userSchema')
-            .q-gutter-y-sm.q-py-sm.text-center(style="max-width: 300px")
-              EmailInput(:name="'email'" v-model="fields.email")
-              PasswordInput(:name="'password'" v-model="fields.password")
-              div.flex.justify-center
-              q-btn(label="Entrar" color="black" square @click="validateUserForm()")
-
-        q-tab-panel(name="alarms")
-          Form(:validation-schema='registerSchema')
-            .q-gutter-y-sm.q-py-sm.text-center(style="max-width: 300px")
-              NormalInput(:name="'user_name'" v-model="registerFields.user_name")
-              EmailInput(:name="'email'" v-model="registerFields.email")
-              PasswordInput(:name="'password'" v-model="registerFields.password")
-              div.flex.justify-center
-              q-btn(label="Registrarse" color="black" square @click="validateRegisterForm()")
+      .text-h5.text-center.login-title.q-my-md Administrador
+      Form(:validation-schema='userSchema')
+        .q-gutter-y-sm.q-py-sm.text-center(style="max-width: 300px")
+          EmailInput(:name="'email'" v-model="fields.email")
+          PasswordInput(:name="'password'" v-model="fields.password")
+          div.flex.justify-center
+          q-btn(label="Administrar" color="black" square @click="validateUserForm()")
 </template>
 
 <script setup lang="ts">
@@ -68,11 +54,11 @@ const userSchema = yup.object().shape({
 })
 
 const validateUser = async () => {
-  const data = await store.get('user/')
+  const data = await store.get('admin/')
   const user = data.find((u: UserData) => u.email === fields.value.email && u.password === fields.value.password)
   if (user) {
-    store.setUser([user.user_name, user.user_id])
-    router.push('index')
+    // store.setUser([user.user_name, user.user_id])
+    router.push('admin-main')
     return true
   }
   store.notify('Error', 'Datos incorrectos', 'error')
